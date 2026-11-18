@@ -1,0 +1,9 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<h1>Panel protegido</h1>
+<p>Usuario autenticado: <strong>{{ user.username }}</strong></p>
+{% if profile %}
+  <p>Código: {{ profile.code }}</p>
+  <p>Nombre: {{ profile.full_name }}</p>
+{% endif %}
+{% endblock %}
