@@ -1,46 +1,59 @@
 from django.contrib import admin
 
-from .models import StudentProfile
+from .models import AthleteProfile
 
 
-@admin.register(StudentProfile)
-class StudentProfileAdmin(admin.ModelAdmin):
+admin.site.site_header = 'Punto de Juego | Administración'
+admin.site.site_title = 'Punto de Juego'
+admin.site.index_title = 'Gestión de la academia deportiva'
+
+
+@admin.register(AthleteProfile)
+class AthleteProfileAdmin(admin.ModelAdmin):
     list_display = (
-        'code',
+        'membership_code',
         'full_name',
+        'sport',
+        'skill_level',
         'email',
-        'career',
-        'is_active_record',
+        'is_active',
         'created_at',
         'display_name',
     )
-    list_filter = ('career', 'is_active_record', 'created_at')
-    search_fields = ('code', 'full_name', 'email', 'user__username')
+    list_filter = ('sport', 'skill_level', 'is_active', 'created_at')
+    search_fields = (
+        'membership_code',
+        'full_name',
+        'email',
+        'user__username',
+    )
     readonly_fields = ('created_at', 'updated_at', 'display_name')
     list_select_related = ('user',)
     fields = (
         'user',
         'full_name',
-        'code',
+        'membership_code',
         'email',
         'phone',
-        'career',
-        'is_active_record',
+        'sport',
+        'skill_level',
+        'birth_date',
+        'is_active',
         'created_at',
         'updated_at',
     )
-    actions = ('activate_profiles', 'deactivate_profiles')
+    actions = ('activate_athletes', 'deactivate_athletes')
 
     @admin.display(description='Nombre normalizado')
     def display_name(self, obj):
         return obj.display_name
 
-    @admin.action(description='Activar registros seleccionados')
-    def activate_profiles(self, request, queryset):
-        updated = queryset.update(is_active_record=True)
-        self.message_user(request, f'{updated} registro(s) activado(s).')
+    @admin.action(description='Activar membresías seleccionadas')
+    def activate_athletes(self, request, queryset):
+        updated = queryset.update(is_active=True)
+        self.message_user(request, f'{updated} membresía(s) activada(s).')
 
-    @admin.action(description='Desactivar registros seleccionados')
-    def deactivate_profiles(self, request, queryset):
-        updated = queryset.update(is_active_record=False)
-        self.message_user(request, f'{updated} registro(s) desactivado(s).')
+    @admin.action(description='Pausar membresías seleccionadas')
+    def deactivate_athletes(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} membresía(s) desactivada(s).')

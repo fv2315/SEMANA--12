@@ -1,10 +1,15 @@
 {% extends 'core/base.html' %}
+{% block title %}Ingresar | Punto de Juego{% endblock %}
 {% block content %}
-<h1>Iniciar sesión</h1>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {{ form.errors }}
-  <button type="submit">Ingresar</button>
-</form>
+<section class="content-card">
+  <span class="eyebrow">Qué bueno tenerte de vuelta</span>
+  <h1>Ingresa a tu espacio</h1>
+  <p class="intro">Accede a tu perfil y continúa con tus objetivos deportivos.</p>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    {{ form.as_p }}
+    <button class="button" type="submit">Ingresar</button>
+  </form>
+</section>
 {% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}Deportistas | Punto de Juego{% endblock %}
+{% block content %}
+<span class="eyebrow">Administración deportiva</span>
+<h1>Deportistas inscritos</h1>
+<p class="intro muted">Consulta los perfiles y disciplinas registrados en la academia.</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Socio</th><th>Deportista</th><th>Disciplina</th><th>Nivel</th><th>Estado</th></tr></thead>
+    <tbody>
+      {% for athlete in athletes %}
+        <tr>
+          <td>{{ athlete.membership_code }}</td>
+          <td>{{ athlete.display_name }}</td>
+          <td>{{ athlete.get_sport_display }}</td>
+          <td>{{ athlete.get_skill_level_display }}</td>
+          <td>{% if athlete.is_active %}<span class="status">Activa</span>{% else %}Pausada{% endif %}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">Todavía no hay deportistas registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

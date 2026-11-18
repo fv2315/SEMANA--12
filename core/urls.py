@@ -11,8 +11,8 @@ urlpatterns = [
     path('perfil/editar/', views.edit_profile, name='edit_profile'),
     path('contacto/', views.contact, name='contact'),
     path(
-        'estudiantes/',
-        views.StudentListView.as_view(),
-        name='student_list',
+        'deportistas/',
+        views.AthleteListView.as_view(),
+        name='athlete_list',
     ),
 ]

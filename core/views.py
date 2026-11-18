@@ -3,32 +3,41 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.models import User
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 
 from .forms import (
+    AthleteProfileForm,
+    AthleteRegistrationForm,
     ContactForm,
-    StudentProfileForm,
-    StudentRegistrationForm,
 )
-from .models import StudentProfile
+from .models import AthleteProfile
 
 
 def home(request):
-    return render(request, 'core/home.html')
+    context = {
+        'athlete_count': AthleteProfile.objects.filter(is_active=True).count(),
+        'sport_count': AthleteProfile.objects.filter(
+            is_active=True,
+        ).values('sport').distinct().count(),
+    }
+    return render(request, 'core/home.html', context)
 
 
 def register(request):
     if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST)
+        form = AthleteRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'Registro completado. Sesión iniciada correctamente.')
+            messages.success(
+                request,
+                'Tu cuenta deportiva está lista. ¡Bienvenido/a al equipo!',
+            )
             return redirect('dashboard')
     else:
-        form = StudentRegistrationForm()
+        form = AthleteRegistrationForm()
     return render(request, 'core/register.html', {'form': form})
 
 
@@ -44,6 +53,7 @@ def login_view(request):
     return render(request, 'core/login.html', {'form': form})
 
 
+@require_POST
 def logout_view(request):
     logout(request)
     messages.info(request, 'Sesión cerrada.')
@@ -52,25 +62,25 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    profile = getattr(request.user, 'student_profile', None)
+    profile = getattr(request.user, 'athlete_profile', None)
     return render(request, 'core/dashboard.html', {'profile': profile})
 
 
 @login_required
 def edit_profile(request):
-    profile = getattr(request.user, 'student_profile', None)
+    profile = getattr(request.user, 'athlete_profile', None)
     if profile is None:
         messages.warning(request, 'Primero complete su perfil.')
         return redirect('dashboard')
 
     if request.method == 'POST':
-        form = StudentProfileForm(request.POST, instance=profile)
+        form = AthleteProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, 'Perfil actualizado.')
             return redirect('dashboard')
     else:
-        form = StudentProfileForm(instance=profile)
+        form = AthleteProfileForm(instance=profile)
     return render(request, 'core/profile.html', {'form': form})
 
 
@@ -86,10 +96,10 @@ def contact(request):
     return render(request, 'core/contact.html', {'form': form})
 
 
-class StudentListView(PermissionRequiredMixin, ListView):
-    permission_required = 'core.view_studentprofile'
+class AthleteListView(PermissionRequiredMixin, ListView):
+    permission_required = 'core.view_athleteprofile'
     raise_exception = True
-    model = StudentProfile
-    template_name = 'core/student_list.html'
-    context_object_name = 'students'
+    model = AthleteProfile
+    template_name = 'core/athlete_list.html'
+    context_object_name = 'athletes'
     paginate_by = 20

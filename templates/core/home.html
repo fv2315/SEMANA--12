@@ -1,5 +1,34 @@
 {% extends 'core/base.html' %}
+{% block title %}Punto de Juego | Entrena con propósito{% endblock %}
 {% block content %}
-<h1>Gestión segura de formularios</h1>
-<p>Laboratorio integrado de Django: formularios, validaciones, Admin, sesiones y autorización.</p>
+<section class="hero">
+  <div>
+    <span class="eyebrow">Disciplina · Comunidad · Rendimiento</span>
+    <h1>Tu próximo nivel empieza aquí.</h1>
+    <p class="hero-copy">Entrena en una comunidad que impulsa tu talento. Encuentra tu disciplina, desarrolla tus habilidades y disfruta cada logro.</p>
+    <div class="actions">
+      <a class="button" href="{% url 'register' %}">Comenzar mi registro</a>
+      <a class="button button-secondary" href="{% url 'login' %}">Ya soy parte</a>
+    </div>
+  </div>
+  <aside class="hero-panel" aria-label="Comunidad deportiva">
+    <div><span class="eyebrow">El movimiento nos une</span><strong>Juega.<br>Crece.</strong></div>
+    <div class="stat-row">
+      <span><strong>{{ athlete_count }}</strong><br>deportistas</span>
+      <span><strong>{{ sport_count }}</strong><br>disciplinas activas</span>
+    </div>
+  </aside>
+</section>
+
+<section aria-labelledby="sports-heading">
+  <div class="section-heading">
+    <div><span class="eyebrow">Encuentra tu cancha</span><h2 id="sports-heading">Elige cómo quieres crecer</h2></div>
+    <p>Programas para cada nivel, con acompañamiento y objetivos claros.</p>
+  </div>
+  <div class="sport-grid">
+    <article class="sport-card"><span class="sport-tag">Equipo</span><h3>Fútbol y vóleibol</h3><p>Coordinación, estrategia y espíritu de equipo.</p></article>
+    <article class="sport-card"><span class="sport-tag">Cancha</span><h3>Básquetbol</h3><p>Velocidad, precisión y lectura del juego.</p></article>
+    <article class="sport-card"><span class="sport-tag">Rendimiento</span><h3>Natación y atletismo</h3><p>Supera tus marcas con constancia y técnica.</p></article>
+  </div>
+</section>
 {% endblock %}

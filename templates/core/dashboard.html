@@ -1,9 +1,21 @@
 {% extends 'core/base.html' %}
+{% block title %}Mi espacio | Punto de Juego{% endblock %}
 {% block content %}
-<h1>Panel protegido</h1>
-<p>Usuario autenticado: <strong>{{ user.username }}</strong></p>
-{% if profile %}
-  <p>Código: {{ profile.code }}</p>
-  <p>Nombre: {{ profile.full_name }}</p>
-{% endif %}
+<section class="content-card">
+  <span class="eyebrow">Área personal</span>
+  <h1>¡Hola, {{ user.username }}!</h1>
+  <p class="intro">Este es tu espacio para seguir creciendo dentro del equipo.</p>
+  {% if profile %}
+    <div class="profile-grid">
+      <div class="profile-item"><small>Deportista</small><strong>{{ profile.display_name }}</strong></div>
+      <div class="profile-item"><small>Código de socio</small><strong>{{ profile.membership_code }}</strong></div>
+      <div class="profile-item"><small>Disciplina</small><strong>{{ profile.get_sport_display }}</strong></div>
+      <div class="profile-item"><small>Nivel</small><strong>{{ profile.get_skill_level_display }}</strong></div>
+      <div class="profile-item"><small>Membresía</small><strong class="status">{% if profile.is_active %}Activa{% else %}Pausada{% endif %}</strong></div>
+    </div>
+    <a class="button" href="{% url 'edit_profile' %}">Actualizar mi perfil</a>
+  {% else %}
+    <p class="muted">Tu cuenta no tiene un perfil de deportista asociado. Contacta con administración para completar tu inscripción.</p>
+  {% endif %}
+</section>
 {% endblock %}

@@ -3,36 +3,98 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Práctica Semana 12{% endblock %}</title>
+  <meta name="theme-color" content="#101f31">
+  <title>{% block title %}Punto de Juego | Academia deportiva{% endblock %}</title>
   <style>
-    body { font-family: system-ui, sans-serif; margin: 0; background: #f4f6f8; color: #172033; }
-    nav { display: flex; gap: 1rem; align-items: center; padding: 1rem 8%; background: #102a43; }
-    nav a { color: white; text-decoration: none; }
-    main { max-width: 760px; margin: 2rem auto; background: white; padding: 2rem; border-radius: 8px; }
-    form p { display: grid; gap: .35rem; }
-    input, select, textarea { padding: .65rem; border: 1px solid #bcc8d4; border-radius: 4px; }
-    button { border: 0; border-radius: 4px; padding: .7rem 1rem; background: #1473e6; color: white; cursor: pointer; }
-    .errorlist, .messages { color: #a61b1b; padding: 0; list-style: none; }
+    :root { color-scheme: light; --ink: #172436; --muted: #64748b; --navy: #101f31; --green: #b7f36b; --line: #e3e9ee; --surface: #fff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: #f5f7f8; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: inherit; }
+    .site-header { background: var(--navy); color: #fff; }
+    .nav-wrap { width: min(1120px, 92%); min-height: 76px; margin: auto; display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; color: #fff; text-decoration: none; font-weight: 800; letter-spacing: .04em; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; background: var(--green); color: var(--navy); font-size: 15px; }
+    .brand small { display: block; color: #aab8c6; font-size: 10px; font-weight: 600; letter-spacing: .16em; }
+    .nav-links { display: flex; align-items: center; gap: 22px; }
+    .nav-links a, .nav-links button { color: #d7e0e8; text-decoration: none; font: inherit; font-size: 14px; }
+    .nav-links a:hover { color: var(--green); }
+    .nav-logout { padding: 0; border: 0; background: none; cursor: pointer; }
+    main { width: min(1120px, 92%); min-height: 68vh; margin: 38px auto 64px; }
+    .hero { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; padding: clamp(32px, 6vw, 72px); border-radius: 24px; color: #fff; background: radial-gradient(ellipse at 86% 20%, #294b50 0, transparent 38%), linear-gradient(125deg, #102033, #152d39); }
+    .hero::after { content: ""; position: absolute; width: 320px; height: 320px; right: 4%; bottom: -240px; border: 1px solid #ffffff24; border-radius: 50%; box-shadow: 0 0 0 32px #ffffff0c, 0 0 0 64px #ffffff08; }
+    .eyebrow { color: #b7f36b; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero h1 { max-width: 620px; margin: 12px 0 18px; font-size: clamp(38px, 6vw, 64px); line-height: 1.04; letter-spacing: -.045em; }
+    .hero-copy { max-width: 550px; color: #cfdae2; font-size: 17px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 10px 18px; border: 0; border-radius: 9px; background: var(--green); color: var(--navy); font: inherit; font-weight: 800; text-decoration: none; cursor: pointer; }
+    .button-secondary { border: 1px solid #ffffff60; background: transparent; color: #fff; }
+    .hero-panel { position: relative; z-index: 1; min-height: 260px; display: flex; flex-direction: column; justify-content: space-between; padding: 26px; border: 1px solid #ffffff25; border-radius: 18px; background: linear-gradient(145deg, #ffffff16, #ffffff06); }
+    .hero-panel strong { display: block; color: var(--green); font-size: clamp(42px, 6vw, 62px); line-height: 1.1; }
+    .hero-panel span { color: #d2dbe3; }
+    .stat-row { display: flex; gap: 30px; padding-top: 20px; border-top: 1px solid #ffffff2b; }
+    .stat-row strong { color: #fff; font-size: 22px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin: 52px 0 20px; }
+    .section-heading h2 { margin: 0; font-size: 28px; letter-spacing: -.03em; }
+    .section-heading p { max-width: 430px; margin: 0; color: var(--muted); }
+    .sport-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .sport-card, .content-card { padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+    .sport-tag { display: inline-block; margin-bottom: 20px; padding: 5px 9px; border-radius: 6px; background: #eff8e5; color: #456b20; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .sport-card h3 { margin-bottom: 6px; font-size: 19px; }
+    .sport-card p, .muted { margin: 0; color: var(--muted); }
+    .content-card { max-width: 720px; margin: 0 auto; padding: clamp(24px, 5vw, 44px); }
+    .content-card h1 { margin-bottom: 8px; font-size: 32px; letter-spacing: -.035em; }
+    .content-card .intro { margin-bottom: 28px; color: var(--muted); }
+    form p { display: grid; gap: 6px; margin: 0 0 17px; }
+    label { color: #334155; font-size: 14px; font-weight: 700; }
+    input, select, textarea { width: 100%; padding: 11px 12px; border: 1px solid #cbd5df; border-radius: 8px; background: #fff; color: var(--ink); font: inherit; }
+    input:focus, select:focus, textarea:focus { outline: 3px solid #b7f36b55; border-color: #6da52b; }
+    .helptext { color: var(--muted); font-size: 12px; }
+    .errorlist, .error-summary { margin: 0; padding: 0; color: #a32d2d; font-size: 13px; list-style: none; }
+    .messages { margin: 0 0 20px; padding: 12px 16px; border-radius: 9px; background: #eff8e5; color: #355719; list-style: none; }
+    .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 24px 0; }
+    .profile-item { padding: 14px; border-radius: 10px; background: #f5f7f8; }
+    .profile-item small { display: block; color: var(--muted); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 13px 15px; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+    .status { color: #41651f; font-weight: 700; }
+    .site-footer { padding: 28px 4%; background: var(--navy); color: #aab8c6; text-align: center; font-size: 13px; }
+    @media (max-width: 760px) { .nav-wrap { align-items: flex-start; flex-direction: column; padding: 16px 0; } .nav-links { flex-wrap: wrap; gap: 12px 18px; } .hero { grid-template-columns: 1fr; } .hero-panel { min-height: 200px; } .sport-grid { grid-template-columns: 1fr; } .section-heading { align-items: flex-start; flex-direction: column; } main { margin-top: 22px; } }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="{% url 'home' %}">Inicio</a>
-    {% if user.is_authenticated %}
-      <a href="{% url 'dashboard' %}">Panel</a>
-      <a href="{% url 'edit_profile' %}">Perfil</a>
-      {% if perms.core.view_studentprofile %}<a href="{% url 'student_list' %}">Estudiantes</a>{% endif %}
-      <a href="{% url 'logout' %}">Cerrar sesión</a>
-    {% else %}
-      <a href="{% url 'login' %}">Ingresar</a>
-      <a href="{% url 'register' %}">Registrarse</a>
-    {% endif %}
-  </nav>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="{% url 'home' %}">
+        <span class="brand-mark">PJ</span>
+        <span>PUNTO DE JUEGO<small>ACADEMIA DEPORTIVA</small></span>
+      </a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="{% url 'home' %}">Inicio</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}">Mi espacio</a>
+          <a href="{% url 'edit_profile' %}">Mi perfil</a>
+          <a href="{% url 'contact' %}">Contacto</a>
+          {% if perms.core.view_athleteprofile %}<a href="{% url 'athlete_list' %}">Deportistas</a>{% endif %}
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="nav-logout" type="submit">Cerrar sesión</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}">Ingresar</a>
+          <a class="button" href="{% url 'register' %}">Únete al equipo</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
   <main>
     {% if messages %}
       <ul class="messages">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+  <footer class="site-footer">Punto de Juego · Entrena con propósito. Crece en equipo.</footer>
 </body>
 </html>
