@@ -9,6 +9,10 @@ from django.db import transaction
 from .models import AthleteProfile, membership_code_validator, phone_validator
 
 
+def sanitize_input(value: str) -> str:
+    return ' '.join(value.strip().split())
+
+
 class AthleteRegistrationForm(UserCreationForm):
     full_name = forms.CharField(
         label='Nombre completo',
@@ -66,22 +70,25 @@ class AthleteRegistrationForm(UserCreationForm):
         )
 
     def clean_full_name(self):
-        value = ' '.join(self.cleaned_data['full_name'].split())
+        value = sanitize_input(self.cleaned_data['full_name'])
         if len(value) < 5:
             raise ValidationError('Ingrese su nombre y apellido.')
         return value
 
     def clean_membership_code(self):
-        code = self.cleaned_data['membership_code'].strip().upper()
+        code = sanitize_input(self.cleaned_data['membership_code']).upper()
         if AthleteProfile.objects.filter(membership_code=code).exists():
             raise ValidationError('Este código de socio ya está registrado.')
         return code
 
     def clean_email(self):
-        email = self.cleaned_data['email'].strip().lower()
+        email = sanitize_input(self.cleaned_data['email']).lower()
         if User.objects.filter(email__iexact=email).exists():
             raise ValidationError('Este correo ya tiene una cuenta.')
         return email
+
+    def clean_phone(self):
+        return sanitize_input(self.cleaned_data['phone'])
 
     def clean(self):
         cleaned_data = super().clean()
@@ -104,7 +111,7 @@ class AthleteRegistrationForm(UserCreationForm):
                     full_name=self.cleaned_data['full_name'],
                     membership_code=self.cleaned_data['membership_code'],
                     email=self.cleaned_data['email'],
-                    phone=self.cleaned_data['phone'].strip(),
+                    phone=self.cleaned_data['phone'],
                     sport=self.cleaned_data['sport'],
                     skill_level=self.cleaned_data['skill_level'],
                     birth_date=self.cleaned_data['birth_date'],
@@ -123,13 +130,13 @@ class ContactForm(forms.Form):
     )
 
     def clean_name(self):
-        name = ' '.join(self.cleaned_data['name'].split())
+        name = sanitize_input(self.cleaned_data['name'])
         if len(name) < 3:
             raise ValidationError('El nombre debe tener al menos 3 caracteres.')
         return name
 
     def clean_subject(self):
-        subject = self.cleaned_data['subject'].strip()
+        subject = sanitize_input(self.cleaned_data['subject'])
         if subject.lower() in ('prueba', 'test'):
             raise ValidationError('Ingrese un asunto descriptivo.')
         return subject
@@ -158,10 +165,10 @@ class AthleteProfileForm(forms.ModelForm):
         }
 
     def clean_full_name(self):
-        return ' '.join(self.cleaned_data['full_name'].split())
+        return sanitize_input(self.cleaned_data['full_name'])
 
     def clean_email(self):
-        email = self.cleaned_data['email'].strip().lower()
+        email = sanitize_input(self.cleaned_data['email']).lower()
         if (
             AthleteProfile.objects
             .filter(email__iexact=email)
@@ -170,3 +177,9 @@ class AthleteProfileForm(forms.ModelForm):
         ):
             raise ValidationError('Este correo ya pertenece a otro perfil.')
         return email
+
+    def clean_membership_code(self):
+        return sanitize_input(self.cleaned_data['membership_code']).upper()
+
+    def clean_phone(self):
+        return sanitize_input(self.cleaned_data['phone'])

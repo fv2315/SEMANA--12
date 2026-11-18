@@ -7,8 +7,13 @@
   <p class="intro">Déjanos tu consulta sobre disciplinas, niveles o membresías.</p>
   <form method="post">
     {% csrf_token %}
-    {{ form.non_field_errors }}
     {{ form.as_p }}
+    {% if form.errors %}
+      <details class="error-summary">
+        <summary>Ver errores del formulario</summary>
+        {{ form.errors }}
+      </details>
+    {% endif %}
     <button class="button" type="submit">Enviar consulta</button>
   </form>
 </section>

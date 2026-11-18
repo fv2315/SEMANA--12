@@ -3,12 +3,12 @@
 {% block content %}
 <section class="content-card">
   <span class="eyebrow">Área personal</span>
-  <h1>¡Hola, {{ user.username }}!</h1>
+  <h1>¡Hola, {{ user.username|escape }}!</h1>
   <p class="intro">Este es tu espacio para seguir creciendo dentro del equipo.</p>
   {% if profile %}
     <div class="profile-grid">
-      <div class="profile-item"><small>Deportista</small><strong>{{ profile.display_name }}</strong></div>
-      <div class="profile-item"><small>Código de socio</small><strong>{{ profile.membership_code }}</strong></div>
+      <div class="profile-item"><small>Deportista</small><strong>{{ profile.display_name|escape }}</strong></div>
+      <div class="profile-item"><small>Código de socio</small><strong>{{ profile.membership_code|escape }}</strong></div>
       <div class="profile-item"><small>Disciplina</small><strong>{{ profile.get_sport_display }}</strong></div>
       <div class="profile-item"><small>Nivel</small><strong>{{ profile.get_skill_level_display }}</strong></div>
       <div class="profile-item"><small>Membresía</small><strong class="status">{% if profile.is_active %}Activa{% else %}Pausada{% endif %}</strong></div>

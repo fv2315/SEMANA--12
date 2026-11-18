@@ -14,6 +14,17 @@ proteger las funciones con autenticación, permisos y sesiones.
 - Middleware con identificador de solicitud, registro y cabeceras de seguridad.
 - Vistas protegidas por autenticación y permisos; cierre de sesión vía POST/CSRF.
 
+## Formularios y seguridad de entrada
+
+Los formularios POST reciben `Form(request.POST)`, se validan con
+`is_valid()` y solo entonces guardan el modelo. Las plantillas muestran
+`form.as_p`, errores por campo y el resumen `form.errors`, además del token
+CSRF. `clean_<campo>()`, `clean()` y validadores del modelo aplican controles
+en campo, formulario y modelo. `sanitize_input()` normaliza espacios y los
+correos se convierten a minúsculas. El HTML se escapa al renderizar con el
+autoescape de Django y el filtro `escape`; no se guardan etiquetas HTML
+escapadas en la base de datos. El ORM parametriza las consultas.
+
 ## Ejecución en Windows
 
 Desde PowerShell, en la carpeta del proyecto:
@@ -46,6 +57,9 @@ py manage.py test
 py manage.py makemigrations --check --dry-run
 ```
 
+En producción, configura primero las variables de entorno indicadas abajo y
+ejecuta también `py manage.py check --deploy`.
+
 ## Evidencias de las cinco fases
 
 Vista general de la academia: [portada deportiva](evidencias/00-portada.png).
@@ -57,4 +71,10 @@ Vista general de la academia: [portada deportiva](evidencias/00-portada.png).
 5. **Integración y middleware:** [contacto y cabeceras de seguridad](evidencias/05-middleware-formulario.png)
 
 La configuración de producción usa `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=0` y
-`DJANGO_ALLOWED_HOSTS`. No se debe desplegar con la clave de desarrollo.
+`DJANGO_ALLOWED_HOSTS`. Guarda los valores en un gestor de secretos; no despliegues
+con la clave de desarrollo.
+
+Para rotar la clave sin invalidar inmediatamente las firmas existentes, define
+la clave nueva en `DJANGO_SECRET_KEY` y pasa temporalmente la anterior en
+`DJANGO_SECRET_KEY_FALLBACKS`, separada por comas. Retira la clave anterior
+después del periodo de transición.

@@ -10,10 +10,10 @@
     <tbody>
       {% for athlete in athletes %}
         <tr>
-          <td>{{ athlete.membership_code }}</td>
-          <td>{{ athlete.display_name }}</td>
-          <td>{{ athlete.get_sport_display }}</td>
-          <td>{{ athlete.get_skill_level_display }}</td>
+          <td>{{ athlete.membership_code|escape }}</td>
+          <td>{{ athlete.display_name|escape }}</td>
+          <td>{{ athlete.get_sport_display|escape }}</td>
+          <td>{{ athlete.get_skill_level_display|escape }}</td>
           <td>{% if athlete.is_active %}<span class="status">Activa</span>{% else %}Pausada{% endif %}</td>
         </tr>
       {% empty %}

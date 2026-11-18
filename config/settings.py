@@ -25,6 +25,11 @@ SECRET_KEY = os.getenv(
     'DJANGO_SECRET_KEY',
     'django-insecure-development-only-change-before-production',
 )
+SECRET_KEY_FALLBACKS = [
+    key.strip()
+    for key in os.getenv('DJANGO_SECRET_KEY_FALLBACKS', '').split(',')
+    if key.strip()
+]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG', '1') == '1'
